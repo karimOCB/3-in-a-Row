@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@types/mongoose": "^5.11.96",
+    "eslint": "^9.15.0",
+    "express": "4.21.1",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.8.2",
+    "typescript-eslint": "^8.15.0"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "start": "node build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "typescript": "^5.6.3"
+  }
+}

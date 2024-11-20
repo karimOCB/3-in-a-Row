@@ -1,4 +1,5 @@
-const Gameboard = () => {
+
+const Play = () => {
   return (
     <div className="grid grid-cols-3 w-60 h-60 mt-8">
       <div className="grid grid-rows-3 border-2">
@@ -17,8 +18,7 @@ const Gameboard = () => {
         <div></div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Gameboard
-
+export default Play
