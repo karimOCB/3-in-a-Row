@@ -6,8 +6,8 @@ import Login from "./pages/Login.tsx"
 import Play from "./pages/Play.tsx"
 
 const router = createBrowserRouter([
-  { path: "/login", element: <Login /> },
-  { path: "/play", element: <Play />}
+  { path: "/", element: <Login /> },
+  { path: "/matches", element: <Play />}
 ])
 
 createRoot(document.getElementById("root")!).render(

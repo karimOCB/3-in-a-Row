@@ -1,8 +1,9 @@
 import express from "express";
-import * as UserController from "../controllers/matches"
+import * as AppController from "../controllers/matches"
 
 const router = express.Router();
 
-router.post("/login",  UserController.matches);
+router.post("/login",  AppController.login);
+router.get("/matches", AppController.matches)
 
 export default router;

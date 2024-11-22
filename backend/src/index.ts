@@ -12,7 +12,7 @@ app.get("/ping", (_req, res) => {
   res.send("pong");
 });
 
-app.use("/matches", matchesRoutes);
+app.use("/api", matchesRoutes);
 
 async () => {
   if (!process.env.MONGO_DB_URL) {
