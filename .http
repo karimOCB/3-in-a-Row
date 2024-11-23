@@ -1,0 +1,13 @@
+### Get all matches
+GET http://localhost:3000/api/matches
+
+### Login
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+    "username1": "Juan",
+    "username2": "Pedro",
+    "email1": "juan@1234.com",
+    "email2": "pedro@1234.com"
+}

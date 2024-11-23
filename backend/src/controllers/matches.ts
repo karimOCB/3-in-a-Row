@@ -25,11 +25,15 @@ export const login: RequestHandler<unknown, unknown, IMatch, unknown> = async (r
     })
 
   } catch (error) {
-    res.status(500).json({ message: "Invalied email or password" })
+    res.status(500).json({ message: error })
   }
 };
-/*
-export const matches = (req, res) => {
 
-} 
-*/ 
+export const getAllMatches: RequestHandler = async (_req, res) => {
+  try {
+    const matches = await MatchModel.find().exec();
+    res.status(200).json(matches);  
+  } catch (error) {
+    console.error(error)
+  }
+}
