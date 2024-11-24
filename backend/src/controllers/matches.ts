@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import MatchModel from "../models/matchModel";
-import { IMatch } from '../types';
+import { IMatch } from '../../types';
 
 export const login: RequestHandler<unknown, unknown, IMatch, unknown> = async (req, res) => {
   const { username1, username2, email1, email2 } = req.body;
@@ -32,7 +32,7 @@ export const login: RequestHandler<unknown, unknown, IMatch, unknown> = async (r
 export const getAllMatches: RequestHandler = async (_req, res) => {
   try {
     const matches = await MatchModel.find().exec();
-    res.status(200).json(matches);  
+    res.status(200).json(matches);
   } catch (error) {
     console.error(error)
   }

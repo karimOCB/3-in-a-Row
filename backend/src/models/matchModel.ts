@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose"
-import { IMatch } from '../types';
+import { IMatch } from '../../types';
 
 const matchSchema = new Schema<IMatch>({
   username1: { type: String, required: true },

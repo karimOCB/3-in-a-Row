@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IMatch } from "../../../backend/src/types";
+import { IMatch } from "../../types.ts";
 import * as MatchesApi from "../../network/matches_api";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ const Login = () => {
     try {
       const match = await MatchesApi.login(credential);  
       if(match) {
-        navigate("/matches")
+        navigate("/guide")
       }
     } catch (error) {
       console.error(error)
@@ -38,8 +38,8 @@ const Login = () => {
       <h1 className="mb-8 text-[6rem] font-extrabold text-slate-100 underline decoration-dashed decoration-[6px] underline-offset-8 decoration-fuchsia-600">
         3 In a Row
       </h1>
-      <p className="mb-8 text-xl text-center max-w-[530px]">
-        Introduce 2 usernames and gmails to start playing 3 in a row and be able
+      <p className="mb-8 text-[18px] text-center max-w-[590px]">
+        Introduce 2 usernames and gmails to start playing 3 in a row, also known as tic-tac-toe, and be able
         to save your results against the same user.
       </p>
       <form onSubmit={onSubmit} className="flex flex-col items-center">
