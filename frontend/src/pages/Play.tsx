@@ -1,6 +1,27 @@
-// get the name and wins of the users
-// implement the logic for the game 
+// get the name and wins of the users from Login page with useContext or retrieve again from database.
+import { useState } from "react"
+import { Board, Turn } from "../../types";
+
 const Play = () => {
+  const [turn, setTurn] = useState<Turn>("O");
+  const [squares, setSquares] = useState<Board>(Array(9).fill("") as Board)
+
+  const handleSquareClick = (index: number) => {
+    if (squares[index] === "O" || squares[index] === "X") return
+    const newSquares = squares.map((square, i) => i === index ? turn : square) as Board;
+    setSquares(newSquares)
+    setTurn(turn === "O" ? "X" : "O");
+  }
+
+  const renderSquare = (index: number) => (
+    <div
+      key={index}
+      className="border flex justify-center items-center h-24 w-24 cursor-pointer text-6xl"
+      onClick={() => handleSquareClick(index)}
+    >
+      {squares[index]}
+    </div>
+  )
 
   return (
     <div className="flex flex-col w-screen h-screen items-center justify-center">
@@ -15,21 +36,7 @@ const Play = () => {
           <span>Win: </span>
         </div>
         <div className="grid grid-cols-3 w-72 h-72">
-          <div className="grid grid-rows-3 border-2">
-            <div className="border-b"></div>
-            <div className="border-b"></div>
-            <div></div>
-          </div>
-          <div className="grid grid-rows-3 border-r-2 border-y-2">
-            <div className="border-b"></div>
-            <div className="border-b"></div>
-            <div></div>
-          </div>
-          <div className="grid grid-rows-3 border-y-2 border-r-2">
-            <div className="border-b"></div>
-            <div className="border-b"></div>
-            <div></div>
-          </div>
+          {squares.map((_, index) => renderSquare(index))}
         </div>
         <div className="flex flex-col ml-10">
           <h2>User 2:</h2>

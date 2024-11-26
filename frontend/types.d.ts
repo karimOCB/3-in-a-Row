@@ -8,12 +8,8 @@ export interface IMatch {
   won2?: number;
 }
 
-export interface Players {
-  player1: "O";
-  player2: "X";
-}
+type Turn = "O" | "X" | ""
+
+type Board = [Turn, Turn, Turn, Turn, Turn, Turn, Turn, Turn, Turn]
 
 
-export interface Win {
-  
-}
