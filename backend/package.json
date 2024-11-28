@@ -13,9 +13,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node --experimental-strip-types --watch build/index.js",
-    "tsc": "tsc",
+    "tsc": "tsc --watch",
     "lint": "ts-standard",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

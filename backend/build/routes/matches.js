@@ -30,5 +30,5 @@ const express_1 = __importDefault(require("express"));
 const AppController = __importStar(require("../controllers/matches"));
 const router = express_1.default.Router();
 router.post("/login", AppController.login);
-router.get("/matches", AppController.matches);
+router.get("/matches", AppController.getAllMatches);
 exports.default = router;

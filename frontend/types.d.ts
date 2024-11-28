@@ -8,8 +8,16 @@ export interface IMatch {
   won2?: number;
 }
 
-type Turn = "O" | "X" | ""
+type Cell = "O" | "X" | "";
 
-type Board = [Turn, Turn, Turn, Turn, Turn, Turn, Turn, Turn, Turn]
+type Board = [Cell, Cell, Cell,
+              Cell, Cell, Cell,
+              Cell, Cell, Cell];
+
+type Winner = "O" | "X" | null;
+
+type winningLine = [number, number, number];
+
+
 
 

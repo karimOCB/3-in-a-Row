@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 const Guide = () => {
+  const location = useLocation()
+  console.log(location.state)
 
   const StrategyItem = ({ title, children }: {title: string, children: string }) => (
     <li className="mb-4">
@@ -88,7 +90,7 @@ const Guide = () => {
                             hover:scale-105 hover:shadow-lg"
                   
                 >
-                  <Link to={"/matches"}>
+                  <Link to={"/matches"} state={location.state}>
                     Start Playing Now
                   </Link>
                 </button>

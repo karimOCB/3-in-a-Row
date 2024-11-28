@@ -17,9 +17,10 @@ const Login = () => {
     event?.preventDefault();
     console.log(credential)
     try {
-      const match = await MatchesApi.login(credential);  
+      const match = await MatchesApi.login(credential); 
+      console.log(match)
       if(match) {
-        navigate("/guide")
+        navigate("/guide", { state: match })
       }
     } catch (error) {
       console.error(error)
