@@ -8,6 +8,12 @@ export interface IMatch {
   won2?: number;
 }
 
+export interface GameStats {
+  played: number,
+  won1: number,
+  won2: number
+}
+
 type Cell = "O" | "X" | "";
 
 type Board = [Cell, Cell, Cell,
