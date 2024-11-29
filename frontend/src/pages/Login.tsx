@@ -1,25 +1,19 @@
 import { useState } from "react";
 import { IMatch } from "../../types.ts";
-import * as MatchesApi from "../../network/matches_api";
+import * as MatchesApi from "../network/matches_api.ts";
 import { useNavigate } from "react-router-dom";
 
-
 const Login = () => {
-  const [credential, setCredential] = useState<IMatch>({
-    username1: "",
-    username2: "",
-    email1: "",
-    email2: ""
-  });
+  const [credential, setCredential] = useState<IMatch | undefined>();
   const navigate = useNavigate();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
-    console.log(credential)
     try {
-      const match = await MatchesApi.login(credential); 
-      console.log(match)
+      const match = await MatchesApi.login(credential as IMatch); 
       if(match) {
+        console.log(match)
+        console.log(match._id)
         navigate("/guide", { state: match })
       }
     } catch (error) {
@@ -32,7 +26,7 @@ const Login = () => {
     setCredential((prevCredential) => ({
       ...prevCredential,
       [name]: value,
-    }));
+    } as IMatch | undefined));
   }
 
   return (
@@ -51,7 +45,7 @@ const Login = () => {
             <input
               type="text"
               name="username1"
-              value={credential.username1}
+              value={credential?.username1}
               className="h-8 rounded-lg min-w-56 px-4 text-red-500"
               onChange={handleChange}
               placeholder="Player O"
@@ -60,7 +54,7 @@ const Login = () => {
             <input
               type="email"
               name="email1"
-              value={credential.email1}
+              value={credential?.email1}
               className="h-8 rounded-lg min-w-56 px-4 text-red-500"
               onChange={handleChange}
               placeholder="...@mail.com"
@@ -72,7 +66,7 @@ const Login = () => {
             <input
               type="text"
               name="username2"
-              value={credential.username2}
+              value={credential?.username2}
               className="h-8 rounded-lg min-w-56 px-4 text-red-500"
               onChange={handleChange}
               placeholder="Player X"
@@ -81,7 +75,7 @@ const Login = () => {
             <input
               type="email"
               name="email2"
-              value={credential.email2}
+              value={credential?.email2}
               className="h-8 rounded-lg min-w-56 px-4 text-red-500"
               onChange={handleChange}
               placeholder="...@mail.com"

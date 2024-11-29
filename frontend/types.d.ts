@@ -1,4 +1,5 @@
 export interface IMatch {
+  _id: string;
   username1: string;
   email1: string;
   username2: string;
@@ -20,7 +21,7 @@ type Board = [Cell, Cell, Cell,
               Cell, Cell, Cell,
               Cell, Cell, Cell];
 
-type Winner = "O" | "X" | null;
+type Winner = "O" | "X" | "Draw" | null;
 
 type winningLine = [number, number, number];
 

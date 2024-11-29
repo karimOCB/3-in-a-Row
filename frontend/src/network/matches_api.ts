@@ -1,4 +1,5 @@
-import { IMatch } from "../../backend/types"
+import { IMatch } from "../../types"
+import { GameStats } from "../../types";
 const backendUrl = "http://localhost:3000"
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
@@ -21,4 +22,15 @@ export const login = async (credentials: IMatch): Promise<IMatch> => {
         body: JSON.stringify(credentials)
     })
     return response.json();
+}
+
+export const updateGameStats = async (matchId: string, gameStats: GameStats): Promise<GameStats> => {
+    const response = await fetchData(`${backendUrl}/api/gameStats/${matchId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gameStats)
+    });
+    return response.json()
 }

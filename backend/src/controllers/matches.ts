@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import MatchModel from "../models/matchModel";
-import { IMatch } from '../../types';
+import { GameStats, IMatch } from '../../types';
 
-export const login: RequestHandler<unknown, unknown, IMatch, unknown> = async (req, res) => {
+export const login: RequestHandler<unknown, IMatch | unknown, IMatch, unknown> = async (req, res) => {
   const { username1, username2, email1, email2 } = req.body;
   try {
     let matchExist = await MatchModel.findOne({
@@ -27,7 +27,8 @@ export const login: RequestHandler<unknown, unknown, IMatch, unknown> = async (r
       email2: matchExist.email2,
       won1: matchExist.won1,
       won2: matchExist.won2,
-      played: matchExist.played
+      played: matchExist.played,
+      _id: matchExist._id
     })
 
   } catch (error) {
@@ -41,5 +42,27 @@ export const getAllMatches: RequestHandler = async (_req, res) => {
     res.status(200).json(matches);
   } catch (error) {
     console.error(error)
+  }
+}
+
+interface updateGameStatsParams {
+  matchId: string
+}
+
+export const updateGameStats: RequestHandler<updateGameStatsParams, unknown, GameStats, unknown> = async  (req, res) => {
+  const matchId = req.params.matchId;
+  const { played: newPlayed, won1: newWon1, won2: newWon2 } = req.body;
+
+  try {
+    const match = await MatchModel.findById(matchId).exec();
+    if(!match) throw new Error ("Match not found");
+    match.played = newPlayed;
+    match.won1 = newWon1;
+    match.won2 = newWon2;
+    
+    const updatedMatch = await match.save()
+    res.status(200).json(updatedMatch);
+  } catch (error) {
+    console.log(error)
   }
 }

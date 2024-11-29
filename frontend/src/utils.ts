@@ -6,11 +6,11 @@ export const winningLines: winningLine[] = [
     [0, 4, 8], [2, 4, 6], // Diagonal top-left to bottom-right, Diagonal top-right to bottom-left
 ]
 
-export const determineWinner = (board: Board): Winner => {
+export const determineWinner = (board: Board): [Winner, number[] | null] => {
     for (const [a, b, c] of winningLines) {
         if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a]
+            return [board[a], [a, b, c]]
         }
     }
-    return null;
+    return [null, null];
 }

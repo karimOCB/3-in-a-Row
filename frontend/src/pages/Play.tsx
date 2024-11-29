@@ -1,12 +1,10 @@
-// Keep adding the components
-// Reset Game after closing and modify Database. Is it better to do it every time a game is finished or only at the last game played?
-
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Board, Cell, GameStats, Winner } from "../../types";
-import { determineWinner } from "../utils"; 
+import { Board, Cell, GameStats, Winner, winningLine } from "../../types";
+import { determineWinner } from "../utils";
+import * as MatchesApi from "../network/matches_api.ts"
 
-import PageSquare from "../components/PageSquare"
+import PageSquare from "../components/PageSquare";
 import WinnerModal from "../components/WinnerModal";
 
 
@@ -15,18 +13,24 @@ const Play = () => {
   const [squares, setSquares] = useState(Array(9).fill("") as Board)
   const [winner, setWinner] = useState<Winner>(null);
   const [gameStats, setGameStats] = useState<GameStats>({played: 0, won1: 0, won2: 0});
+  const [winningLine, setWinningLine] = useState<winningLine>()
 
   const location = useLocation();
-  const { username1, username2, played, won1, won2 } = location.state;
+  const { username1, username2, _id } = location.state || {};
 
   useEffect(() => { 
-      setGameStats({ played, won1, won2 } as GameStats)
-  }, [])  
+    console.log(_id)
+    MatchesApi.updateGameStats(_id, gameStats)
+  }, [gameStats])  
 
   useEffect(() => {
     const winner = determineWinner(squares);
-    if (winner) { 
-      setWinner(winner) 
+    setWinningLine(winner[1] as winningLine);
+    if (winner[0]) { 
+      setWinner(winner[0])
+    }
+    if (!squares.includes("") && !winner) {
+      setWinner("Draw")
     }
   }, [squares])
 
@@ -42,10 +46,10 @@ const Play = () => {
           <div className="flex items-center justify-center">
             <div className="flex flex-col mr-10">
               <h2>User 1: {username1}</h2>
-              <span>Won: {gameStats?.won1}</span>
+              <span>Won: {gameStats?.won1 }</span>
             </div>
             <div className="grid grid-cols-3 w-72 h-72">
-              {squares.map((_, index) => <PageSquare key={index} index={index} squares={squares} setSquares={setSquares} setTurn={setTurn} turn={turn}/>)}
+              {squares.map((_, index) => <PageSquare key={index} index={index} squares={squares} setSquares={setSquares} setTurn={setTurn} turn={turn} winningLine={winningLine}/>)}
             </div>
             <div className="flex flex-col ml-10">
               <h2>User 2: {username2}</h2>

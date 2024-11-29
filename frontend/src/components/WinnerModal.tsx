@@ -30,6 +30,11 @@ const WinnerModal = ({ winner, username1, username2, gameStats, setWinner, setSq
         played: gameStats.played + 1,
         won2: gameStats.won2 + 1,
       })
+    } else {
+      setGameStats({
+        ...gameStats,
+        played: gameStats.played + 1,
+      })
     }
     setWinner(null)
     setSquares(Array(9).fill("") as Board)
@@ -54,9 +59,11 @@ const WinnerModal = ({ winner, username1, username2, gameStats, setWinner, setSq
           <div className="flex items-center justify-center text-red-500 font-bold cursor-pointer">
           <span className="border-4 border-blue-700 rounded-xl py-1 px-3" onClick={() => onCloseModal()}>X</span>
           </div>
-          <p className="text-5xl font-semibold">¡¡¡{winner === "O" ? username1 : username2} Wins!!!</p>
+          <p className="text-5xl font-semibold">
+            {winner === "Draw" ? "Draw! Try Again" : `${winner === "O" ? username1 : username2} Wins!`}
+          </p>
       </div>
-      <Confetti width={windowWidth} height={windowHeight} />
+      {winner !== "Draw" && <Confetti width={windowWidth} height={windowHeight} />}
     </>
   )
 }
