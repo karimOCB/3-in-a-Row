@@ -2,8 +2,6 @@ import { Link, useLocation } from "react-router-dom"
 
 const Guide = () => {
   const location = useLocation()
-  console.log(location.state)
-  console.log(location.state._id)
 
   const StrategyItem = ({ title, children }: {title: string, children: string }) => (
     <li className="mb-4">

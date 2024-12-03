@@ -35,7 +35,7 @@ const Login = () => {
         3 In a Row
       </h1>
       <p className="mb-8 text-[18px] text-center max-w-[590px]">
-        Introduce 2 usernames and gmails to start playing 3 in a row, also known as tic-tac-toe, and be able
+        Introduce 2 usernames and mails to start playing 3 in a row, also known as tic-tac-toe, and be able
         to save your results against the same user.
       </p>
       <form onSubmit={onSubmit} className="flex flex-col items-center">

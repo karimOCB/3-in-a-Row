@@ -34,3 +34,10 @@ export const updateGameStats = async (matchId: string, gameStats: GameStats): Pr
     });
     return response.json()
 }
+
+export const getPairMatches = async (matchId: string): Promise<GameStats> => {
+    const response = await fetchData(`${backendUrl}/api/pairMatches/${matchId}`, {
+        method: "GET"
+    })
+    return response.json();
+}

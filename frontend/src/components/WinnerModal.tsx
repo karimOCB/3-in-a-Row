@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Confetti from "react-confetti";
 import { Board, Cell, GameStats, Winner } from "../../types";
+import { windowResize } from "../utils";
 
 interface WinnerModalInt {
   winner: Winner,
@@ -42,15 +43,7 @@ const WinnerModal = ({ winner, username1, username2, gameStats, setWinner, setSq
   }
 
   useEffect(() => {
-    const resize = () => {
-      setWindowWidth(window.innerWidth)
-      setWindowHeight(window.innerHeight)
-    }
-    window.addEventListener("resize", resize)
-
-    return () => {
-      window.removeEventListener("resize", resize);
-    };
+    windowResize({setWindowHeight, setWindowWidth})
   }, [])
 
   return (

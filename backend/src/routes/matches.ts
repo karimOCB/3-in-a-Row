@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/login",  AppController.login);
 router.get("/matches", AppController.getAllMatches)
-router.patch("/gameStats", AppController.updateGameStats)
+router.get("/pairMatches/:matchId", AppController.getPairMatches)
+router.patch("/gameStats/:matchId", AppController.updateGameStats)
 
 export default router;

@@ -14,3 +14,22 @@ export const determineWinner = (board: Board): [Winner, number[] | null] => {
     }
     return [null, null];
 }
+
+type WindowResize = {
+    setWindowHeight?: React.Dispatch<React.SetStateAction<number>>,
+    setWindowWidth: React.Dispatch<React.SetStateAction<number>>,
+}
+
+export const windowResize = ({setWindowHeight, setWindowWidth}: WindowResize) => {
+    const resize = () => {
+        setWindowWidth(window.innerWidth)
+        if(setWindowHeight) {
+            setWindowHeight(window.innerHeight)
+        }
+    }
+    window.addEventListener("resize", resize)
+
+    return () => {
+        window.removeEventListener("resize", resize);
+    };
+}

@@ -4,7 +4,7 @@ interface PageSquareProps {
   index: number, 
   squares: Board,
   turn: Cell, 
-  winningLine: winningLine | undefined,
+  winningLine: winningLine | null,
   setSquares: React.Dispatch<React.SetStateAction<Board>>,
   setTurn: React.Dispatch<React.SetStateAction<Cell>>,
 }
@@ -20,7 +20,7 @@ const PageSquare = ({ index, squares, turn, winningLine, setSquares, setTurn }: 
   return (
         <div
             key={index}
-            className={`border flex justify-center items-center h-24 w-24 cursor-pointer text-6xl ${winningLine?.includes(index) ? "text-green-500" : ""}`}
+            className={`border border-t-2 border-r-2 flex justify-center items-center h-14 w-14 sm:h-24 sm:w-24 cursor-pointer text-4xl sm:text-6xl ${winningLine?.includes(index) ? "text-green-500" : ""}`}
             onClick={() => handleSquareClick(index)}
             >
             {squares[index]}
