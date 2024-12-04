@@ -22,10 +22,6 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 const PORT = process.env.PORT || 3000;
-app.get("/ping", (_req, res) => {
-    console.log("someone pinged here!!");
-    res.send("pong");
-});
 app.use("/api", matches_1.default);
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     if (!process.env.MONGO_DB_URL) {

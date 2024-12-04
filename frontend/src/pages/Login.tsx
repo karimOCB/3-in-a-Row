@@ -4,6 +4,7 @@ import * as MatchesApi from "../network/matches_api.ts";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false)
   const [credential, setCredential] = useState<IMatch | undefined>();
   const navigate = useNavigate();
 
@@ -12,8 +13,6 @@ const Login = () => {
     try {
       const match = await MatchesApi.login(credential as IMatch); 
       if(match) {
-        console.log(match)
-        console.log(match._id)
         navigate("/guide", { state: match })
       }
     } catch (error) {
@@ -83,7 +82,25 @@ const Login = () => {
             />
           </div>
         </div>
-
+        <div>
+          <input
+            type={passwordVisibility ? "text" : "password"}
+            name="password1"
+            value={credential?.password}
+            className="h-8 rounded-lg min-w-56 px-4 mt-4 text-red-500"
+            onChange={handleChange}
+            placeholder="Match Password"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setPasswordVisibility(prevState => !prevState)}
+            className="cursor-pointer border border-gray-500 py-1 px-2 ml-4"
+            style={{ background: "none" }}
+          >
+            {passwordVisibility ? "👁️" : "👁️‍🗨️"}
+          </button>
+        </div>
         <button type="submit" className="mt-5 bg-blue-600 hover:bg-blue-800 text-lg transition-all duration-500">
           Start Game
         </button>
