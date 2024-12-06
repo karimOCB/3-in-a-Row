@@ -9,5 +9,6 @@ Content-Type: application/json
     "username1": "Juan",
     "username2": "Pedro",
     "email1": "juan@1234.com",
-    "email2": "pedro@1234.com"
+    "email2": "pedro@1234.com",
+    "password": "1234"
 }

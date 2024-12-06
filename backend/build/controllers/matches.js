@@ -13,10 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllMatches = exports.updateGameStats = exports.getPairMatches = exports.login = void 0;
-const matchModel_1 = __importDefault(require("../models/matchModel"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const matchModel_1 = __importDefault(require("../models/matchModel"));
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username1, username2, email1, email2 } = req.body;
+    const { username1, username2, email1, email2, password } = req.body;
+    if (!password || password.length < 5) {
+        res.status(400).json({ error: "Password must be at least 5 characters long" });
+        return;
+    }
     try {
         let matchExist = yield matchModel_1.default.findOne({
             $or: [
@@ -25,13 +30,19 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             ]
         });
         // handle error better, for example message when the email or username exist but don't coincide
+        const passwordMatch = yield bcrypt_1.default.compare(password, matchExist === null || matchExist === void 0 ? void 0 : matchExist.password);
+        if (!passwordMatch) {
+            res.status(401).json({ error: "Invalid password" });
+        }
         if (!matchExist) {
+            const passwordHashed = yield bcrypt_1.default.hash(password, 10);
             const won1 = 0;
             const won2 = 0;
             const played = 0;
-            matchExist = yield matchModel_1.default.create({ username1, username2, email1, email2, played, won1, won2 });
+            matchExist = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed, played, won1, won2 });
         }
-        res.json({
+        console.log(matchExist);
+        res.status(200).json({
             username1: matchExist.username1,
             username2: matchExist.username2,
             email1: matchExist.email1,

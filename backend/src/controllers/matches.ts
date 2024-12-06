@@ -1,10 +1,17 @@
 import { RequestHandler } from "express";
-import MatchModel from "../models/matchModel";
-import { GameStats, IMatch } from '../../types';
 import mongoose from "mongoose";
+import bcrypt from "bcrypt"
+import { GameStats, IMatch } from '../../types';
+import MatchModel from "../models/matchModel";
 
-export const login: RequestHandler<unknown, IMatch | unknown, IMatch, unknown> = async (req, res) => {
-  const { username1, username2, email1, email2 } = req.body;
+
+export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = async (req, res): Promise<void> => {
+  const { username1, username2, email1, email2, password } = req.body;
+  if(!password || password.length < 5) {
+    res.status(400).json({ error: "Password must be at least 5 characters long" })
+    return;
+  }
+
   try {
     let matchExist = await MatchModel.findOne({
       $or: [
@@ -13,15 +20,23 @@ export const login: RequestHandler<unknown, IMatch | unknown, IMatch, unknown> =
       ]
     });
     // handle error better, for example message when the email or username exist but don't coincide
+   
+    const passwordMatch: boolean = await bcrypt.compare(password, matchExist?.password as string) 
+
+    if (!passwordMatch) {
+      res.status(401).json({ error: "Invalid password" })
+    }
 
     if (!matchExist) {
+      const passwordHashed = await bcrypt.hash(password, 10)
       const won1 = 0;
       const won2 = 0;
       const played = 0;
-      matchExist = await MatchModel.create({ username1, username2, email1, email2, played, won1, won2 });
+      matchExist = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed, played, won1, won2 });
     }
 
-    res.json({
+    console.log(matchExist)
+    res.status(200).json({
       username1: matchExist.username1,
       username2: matchExist.username2,
       email1: matchExist.email1,
