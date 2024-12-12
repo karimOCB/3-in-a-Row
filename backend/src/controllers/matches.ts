@@ -4,11 +4,34 @@ import bcrypt from "bcrypt"
 import { GameStats, IMatch } from '../../types';
 import MatchModel from "../models/matchModel";
 
+export const signup: RequestHandler = async (req, res) => {
+  const { username1, username2, email1, email2, password } = req.body;
+
+  if (!password || password.length < 5) {
+    res.status(400).json({ error: "Password must be at least 5 characters long" })
+    return;
+  }
+
+  const passwordHashed = await bcrypt.hash(password, 10)
+
+  const match = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed });
+
+  res.status(200).json({
+    username1: match.username1,
+    username2: match.username2,
+    email1: match.email1,
+    email2: match.email2,
+    won1: match.won1,
+    won2: match.won2,
+    played: match.played,
+    _id: match._id
+  })
+}
 
 export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = async (req, res): Promise<void> => {
   const { username1, username2, email1, email2, password } = req.body;
-  if(!password || password.length < 5) {
-    res.status(400).json({ error: "Password must be at least 5 characters long" })
+  if (!password || !username1 || !username2 || email1 || email2) {
+    res.status(400).json({ error: "All fields are required" })
     return;
   }
 
@@ -20,22 +43,17 @@ export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = asyn
       ]
     });
     // handle error better, for example message when the email or username exist but don't coincide
-   
-    const passwordMatch: boolean = await bcrypt.compare(password, matchExist?.password as string) 
+    if (!matchExist) {
+      res.status(400).json({ error: "No Match exist. Create a Match." })
+      return
+    }
+
+    const passwordMatch: boolean = await bcrypt.compare(password, matchExist.password as string)
 
     if (!passwordMatch) {
       res.status(401).json({ error: "Invalid password" })
     }
 
-    if (!matchExist) {
-      const passwordHashed = await bcrypt.hash(password, 10)
-      const won1 = 0;
-      const won2 = 0;
-      const played = 0;
-      matchExist = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed, played, won1, won2 });
-    }
-
-    console.log(matchExist)
     res.status(200).json({
       username1: matchExist.username1,
       username2: matchExist.username2,
@@ -82,11 +100,11 @@ export const updateGameStats: RequestHandler<updateGameStatsParams, unknown, Gam
       throw new Error('"Invalid Match id"');
     }
     const match = await MatchModel.findById(matchId).exec();
-    if(!match) throw new Error ("Match not found");
+    if (!match) throw new Error("Match not found");
     match.played = newPlayed;
     match.won1 = newWon1;
     match.won2 = newWon2;
-    
+
     const updatedMatch = await match.save()
     res.status(200).json(updatedMatch);
   } catch (error) {

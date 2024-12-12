@@ -13,6 +13,17 @@ async function fetchData(input: RequestInfo, init?: RequestInit) {
     }
 }
 
+export const signup = async (credentials: IMatch): Promise<IMatch> => {
+    const response = await fetchData(`${backendUrl}/api/signup`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(credentials)
+    })
+    return response.json()
+}
+
 export const login = async (credentials: IMatch): Promise<IMatch> => {
     const response = await fetchData(`${backendUrl}/api/login`, {
         method: "POST",

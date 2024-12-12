@@ -4,6 +4,7 @@ import * as AppController from "../controllers/matches"
 const router = express.Router();
 
 router.post("/login",  AppController.login);
+router.post("/signup", AppController.signup)
 router.get("/matches", AppController.getAllMatches)
 router.get("/pairMatches/:matchId", AppController.getPairMatches)
 router.patch("/gameStats/:matchId", AppController.updateGameStats)

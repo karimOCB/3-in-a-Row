@@ -12,14 +12,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllMatches = exports.updateGameStats = exports.getPairMatches = exports.login = void 0;
+exports.getAllMatches = exports.updateGameStats = exports.getPairMatches = exports.login = exports.signup = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const matchModel_1 = __importDefault(require("../models/matchModel"));
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username1, username2, email1, email2, password } = req.body;
     if (!password || password.length < 5) {
         res.status(400).json({ error: "Password must be at least 5 characters long" });
+        return;
+    }
+    const passwordHashed = yield bcrypt_1.default.hash(password, 10);
+    const match = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed });
+    res.status(200).json({
+        username1: match.username1,
+        username2: match.username2,
+        email1: match.email1,
+        email2: match.email2,
+        won1: match.won1,
+        won2: match.won2,
+        played: match.played,
+        _id: match._id
+    });
+});
+exports.signup = signup;
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username1, username2, email1, email2, password } = req.body;
+    if (!password || !username1 || !username2 || email1 || email2) {
+        res.status(400).json({ error: "All fields are required" });
         return;
     }
     try {
@@ -30,18 +50,14 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             ]
         });
         // handle error better, for example message when the email or username exist but don't coincide
-        const passwordMatch = yield bcrypt_1.default.compare(password, matchExist === null || matchExist === void 0 ? void 0 : matchExist.password);
+        if (!matchExist) {
+            res.status(400).json({ error: "No Match exist. Create a Match." });
+            return;
+        }
+        const passwordMatch = yield bcrypt_1.default.compare(password, matchExist.password);
         if (!passwordMatch) {
             res.status(401).json({ error: "Invalid password" });
         }
-        if (!matchExist) {
-            const passwordHashed = yield bcrypt_1.default.hash(password, 10);
-            const won1 = 0;
-            const won2 = 0;
-            const played = 0;
-            matchExist = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed, played, won1, won2 });
-        }
-        console.log(matchExist);
         res.status(200).json({
             username1: matchExist.username1,
             username2: matchExist.username2,

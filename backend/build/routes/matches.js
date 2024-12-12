@@ -30,6 +30,7 @@ const express_1 = __importDefault(require("express"));
 const AppController = __importStar(require("../controllers/matches"));
 const router = express_1.default.Router();
 router.post("/login", AppController.login);
+router.post("/signup", AppController.signup);
 router.get("/matches", AppController.getAllMatches);
 router.get("/pairMatches/:matchId", AppController.getPairMatches);
 router.patch("/gameStats/:matchId", AppController.updateGameStats);

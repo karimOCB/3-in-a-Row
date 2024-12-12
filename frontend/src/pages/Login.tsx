@@ -18,9 +18,32 @@ const Login = () => {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
+
+    const nativeEvent = event.nativeEvent as SubmitEvent;
+    const buttonClicked = nativeEvent.submitter as HTMLButtonElement;
+
+    if (buttonClicked.name === "returnToMatch") {
+      onSubmitLogin();
+    } else if (buttonClicked.name === "createMatch") {
+      onSubmitSignUp();
+    }
+  }
+
+  const onSubmitLogin = async () => {
     try {
-      console.log(credential)
       const match = await MatchesApi.login(credential as IMatch); 
+      if(match) {
+        navigate("/guide", { state: match })
+      }
+    } catch (error) {
+      console.error(error)
+      setErrorMessage(true)
+    }
+  }
+
+  const onSubmitSignUp = async () => {
+    try {
+      const match = await MatchesApi.signup(credential as IMatch); 
       if(match) {
         navigate("/guide", { state: match })
       }
@@ -39,7 +62,6 @@ const Login = () => {
   }
 
   return (
-    
       <div className={`flex w-screen h-screen justify-center items-center`}>
         <div className={`flex flex-col items-center max-sm:px-2 ${errorMessage ? "opacity-20" : ""}`}>
           <h1 className="mb-8 sm:text-[6rem] font-extrabold text-slate-100 underline decoration-dashed decoration-[6px] underline-offset-8 decoration-fuchsia-600">
@@ -113,9 +135,14 @@ const Login = () => {
                 {passwordVisibility ? "👁️" : "👁️‍🗨️"}
               </button>
             </div>
-            <button type="submit" className="mt-5 bg-blue-600 hover:bg-blue-800 text-lg transition-all duration-500">
-              Start Game
-            </button>
+            <div className="space-x-4">
+              <button type="submit" name="returnToMatch" className="mt-5 bg-blue-600 hover:bg-blue-800 text-lg transition-all duration-500">
+                Return to Match
+              </button>
+              <button type="submit" name="createMatch" className="mt-5 bg-blue-600 hover:bg-blue-800 text-lg transition-all duration-500">
+                Create Match
+              </button>
+            </div>
           </form>
         </div>
         {errorMessage && 
@@ -126,7 +153,6 @@ const Login = () => {
           </div>
         }
       </div>
-
   );
 };
 
