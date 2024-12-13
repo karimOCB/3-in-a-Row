@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IMatch } from "../../types.ts";
+import { IMatch, ApiError } from "../../types.ts";
 import * as MatchesApi from "../network/matches_api.ts";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const Login = () => {
     _id: "",
     password: ""
   });
-  const [errorMessage, setErrorMessage] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const navigate = useNavigate();
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -29,29 +29,30 @@ const Login = () => {
     }
   }
 
-  const onSubmitLogin = async () => {
-    try {
-      const match = await MatchesApi.login(credential as IMatch); 
-      if(match) {
-        navigate("/guide", { state: match })
-      }
-    } catch (error) {
-      console.error(error)
-      setErrorMessage(true)
+const onSubmitLogin = async () => {
+  try {
+    const match = await MatchesApi.login(credential as IMatch);
+    if (match) {
+      navigate("/guide", { state: match });
     }
-  }
+  } catch (error: unknown) { // Use `unknown` here
+    console.error(error);
 
-  const onSubmitSignUp = async () => {
+  }
+};
+
+ const onSubmitSignUp = async () => {
     try {
       const match = await MatchesApi.signup(credential as IMatch); 
       if(match) {
         navigate("/guide", { state: match })
       }
     } catch (error) {
-      console.error(error)
-      setErrorMessage(true)
+      console.error("FRONTEND", error)
+      console.log('Stringified error:', JSON.stringify(error, null, 2));
     }
   }
+ 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -146,9 +147,9 @@ const Login = () => {
           </form>
         </div>
         {errorMessage && 
-          <div className="absolute w-[50%] h-[30%] border-2 rounded-xl bg-slate-300 flex items-center border-red-400 cursor-pointer" onClick={() => setErrorMessage(false)}>
+          <div className="absolute w-[50%] h-[30%] border-2 rounded-xl bg-slate-300 flex items-center border-red-400 cursor-pointer" onClick={() => setErrorMessage(null)}>
             <p className="text-xl sm:text-3xl text-center text-fuchsia-900 font-semibold">
-             The password must be longer than 4 digits.
+             {errorMessage}
             </p>
           </div>
         }

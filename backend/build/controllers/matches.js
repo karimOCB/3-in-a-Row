@@ -18,22 +18,27 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const matchModel_1 = __importDefault(require("../models/matchModel"));
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username1, username2, email1, email2, password } = req.body;
-    if (!password || password.length < 5) {
-        res.status(400).json({ error: "Password must be at least 5 characters long" });
-        return;
+    try {
+        if (!password || password.length < 5) {
+            res.status(400).json({ error: "Password must be at least 5 characters long" });
+            return;
+        }
+        const passwordHashed = yield bcrypt_1.default.hash(password, 10);
+        const match = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed });
+        res.status(200).json({
+            username1: match.username1,
+            username2: match.username2,
+            email1: match.email1,
+            email2: match.email2,
+            won1: match.won1,
+            won2: match.won2,
+            played: match.played,
+            _id: match._id
+        });
     }
-    const passwordHashed = yield bcrypt_1.default.hash(password, 10);
-    const match = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed });
-    res.status(200).json({
-        username1: match.username1,
-        username2: match.username2,
-        email1: match.email1,
-        email2: match.email2,
-        won1: match.won1,
-        won2: match.won2,
-        played: match.played,
-        _id: match._id
-    });
+    catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 exports.signup = signup;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

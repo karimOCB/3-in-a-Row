@@ -7,25 +7,31 @@ import MatchModel from "../models/matchModel";
 export const signup: RequestHandler = async (req, res) => {
   const { username1, username2, email1, email2, password } = req.body;
 
-  if (!password || password.length < 5) {
-    res.status(400).json({ error: "Password must be at least 5 characters long" })
-    return;
+  try {
+    if (!password || password.length < 5) {
+      res.status(400).json({ error: "Password must be at least 5 characters long" })
+      return;
+    }
+
+    const passwordHashed = await bcrypt.hash(password, 10)
+
+    const match = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed });
+
+    res.status(200).json({
+      username1: match.username1,
+      username2: match.username2,
+      email1: match.email1,
+      email2: match.email2,
+      won1: match.won1,
+      won2: match.won2,
+      played: match.played,
+      _id: match._id
+    })
+  } catch (error) {
+    
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  const passwordHashed = await bcrypt.hash(password, 10)
-
-  const match = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed });
-
-  res.status(200).json({
-    username1: match.username1,
-    username2: match.username2,
-    email1: match.email1,
-    email2: match.email2,
-    won1: match.won1,
-    won2: match.won2,
-    played: match.played,
-    _id: match._id
-  })
+  
 }
 
 export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = async (req, res): Promise<void> => {
