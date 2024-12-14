@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IMatch, ApiError } from "../../types.ts";
+import { IMatch } from "../../types.ts";
 import * as MatchesApi from "../network/matches_api.ts";
 import { useNavigate } from "react-router-dom";
 
@@ -31,10 +31,12 @@ const Login = () => {
 
 const onSubmitLogin = async () => {
   try {
-    const match = await MatchesApi.login(credential as IMatch);
-    if (match) {
-      navigate("/guide", { state: match });
+    const response = await MatchesApi.login(credential);
+
+    if (response.data) {
+      navigate("/guide", { state: response.data });
     }
+    console.log(response)
   } catch (error: unknown) { // Use `unknown` here
     console.error(error);
 
@@ -43,13 +45,19 @@ const onSubmitLogin = async () => {
 
  const onSubmitSignUp = async () => {
     try {
-      const match = await MatchesApi.signup(credential as IMatch); 
-      if(match) {
-        navigate("/guide", { state: match })
+      const response = await MatchesApi.signup(credential);
+
+      if (response.data) {
+        navigate("/guide", { state: response.data });
       }
+      console.log(response)
     } catch (error) {
+      if (error instanceof Error) {
+          console.log(`${error.message}`)
+          console.log(error)
+      }
       console.error("FRONTEND", error)
-      console.log('Stringified error:', JSON.stringify(error, null, 2));
+      
     }
   }
  

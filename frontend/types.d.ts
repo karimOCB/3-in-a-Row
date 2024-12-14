@@ -25,14 +25,3 @@ type Board = [Cell, Cell, Cell,
 type Winner = "O" | "X" | "Draw" | null;
 
 type winningLine = [number, number, number];
-
-
-interface ApiError {
-  response?: {
-    data?: {
-      error?: string;
-    };
-  };
-  message?: string;
-}
-

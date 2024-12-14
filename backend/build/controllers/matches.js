@@ -16,36 +16,38 @@ exports.getAllMatches = exports.updateGameStats = exports.getPairMatches = expor
 const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const matchModel_1 = __importDefault(require("../models/matchModel"));
-const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const http_errors_1 = __importDefault(require("http-errors"));
+const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username1, username2, email1, email2, password } = req.body;
     try {
         if (!password || password.length < 5) {
-            res.status(400).json({ error: "Password must be at least 5 characters long" });
-            return;
+            throw (0, http_errors_1.default)(400, "Password must be at least 5 characters long");
         }
         const passwordHashed = yield bcrypt_1.default.hash(password, 10);
         const match = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed });
-        res.status(200).json({
-            username1: match.username1,
-            username2: match.username2,
-            email1: match.email1,
-            email2: match.email2,
-            won1: match.won1,
-            won2: match.won2,
-            played: match.played,
-            _id: match._id
+        res.status(200).json({ data: {
+                username1: match.username1,
+                username2: match.username2,
+                email1: match.email1,
+                email2: match.email2,
+                won1: match.won1,
+                won2: match.won2,
+                played: match.played,
+                _id: match._id
+            }
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
+        if (error instanceof Error)
+            console.error(error.message);
+        next(error);
     }
 });
 exports.signup = signup;
-const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username1, username2, email1, email2, password } = req.body;
-    if (!password || !username1 || !username2 || email1 || email2) {
-        res.status(400).json({ error: "All fields are required" });
-        return;
+    if (!password) {
+        throw (0, http_errors_1.default)(400, "All fields are required");
     }
     try {
         let matchExist = yield matchModel_1.default.findOne({
@@ -56,26 +58,26 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         // handle error better, for example message when the email or username exist but don't coincide
         if (!matchExist) {
-            res.status(400).json({ error: "No Match exist. Create a Match." });
-            return;
+            throw (0, http_errors_1.default)(400, "No Match exist. Create a Match");
         }
         const passwordMatch = yield bcrypt_1.default.compare(password, matchExist.password);
         if (!passwordMatch) {
-            res.status(401).json({ error: "Invalid password" });
+            throw (0, http_errors_1.default)(401, "Invalid password");
         }
-        res.status(200).json({
-            username1: matchExist.username1,
-            username2: matchExist.username2,
-            email1: matchExist.email1,
-            email2: matchExist.email2,
-            won1: matchExist.won1,
-            won2: matchExist.won2,
-            played: matchExist.played,
-            _id: matchExist._id
+        res.status(200).json({ data: {
+                username1: matchExist.username1,
+                username2: matchExist.username2,
+                email1: matchExist.email1,
+                email2: matchExist.email2,
+                won1: matchExist.won1,
+                won2: matchExist.won2,
+                played: matchExist.played,
+                _id: matchExist._id
+            }
         });
     }
     catch (error) {
-        res.status(500).json({ message: error });
+        next(error);
     }
 });
 exports.login = login;
@@ -94,17 +96,17 @@ const getPairMatches = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getPairMatches = getPairMatches;
-const updateGameStats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateGameStats = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const matchId = req.params.matchId;
     const { played: newPlayed, won1: newWon1, won2: newWon2 } = req.body;
     console.log(newPlayed, newWon1, newWon2, matchId, typeof matchId, mongoose_1.default.isValidObjectId(matchId));
     try {
         if (!mongoose_1.default.isValidObjectId(matchId)) {
-            throw new Error('"Invalid Match id"');
+            throw (0, http_errors_1.default)(404, "Invalid Match id");
         }
         const match = yield matchModel_1.default.findById(matchId).exec();
         if (!match)
-            throw new Error("Match not found");
+            throw (0, http_errors_1.default)(403, "Match not found");
         match.played = newPlayed;
         match.won1 = newWon1;
         match.won2 = newWon2;
@@ -112,18 +114,17 @@ const updateGameStats = (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(200).json(updatedMatch);
     }
     catch (error) {
-        console.log(error);
-        res.status(500).json({ error });
+        next(error);
     }
 });
 exports.updateGameStats = updateGameStats;
-const getAllMatches = (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllMatches = (_req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const matches = yield matchModel_1.default.find().exec();
         res.status(200).json(matches);
     }
     catch (error) {
-        console.error(error);
+        next(error);
     }
 });
 exports.getAllMatches = getAllMatches;

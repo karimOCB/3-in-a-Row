@@ -13,7 +13,7 @@ async function fetchData(input: RequestInfo, init?: RequestInit) {
     }
 }
 
-export const signup = async (credentials: IMatch): Promise<IMatch> => {
+export const signup = async (credentials: IMatch) => {
     const response = await fetchData(`${backendUrl}/api/signup`, {
         method: "POST",
         headers: {
@@ -24,7 +24,7 @@ export const signup = async (credentials: IMatch): Promise<IMatch> => {
     return response.json()
 }
 
-export const login = async (credentials: IMatch): Promise<IMatch> => {
+export const login = async (credentials: IMatch) => {
     const response = await fetchData(`${backendUrl}/api/login`, {
         method: "POST",
         headers: {

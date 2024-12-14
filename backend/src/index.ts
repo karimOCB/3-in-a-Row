@@ -1,8 +1,9 @@
-import express from "express";
-import matchesRoutes from "./routes/matches";
-import mongoose from "mongoose"
+import cors from "cors";
 import dotenv from "dotenv";
-import cors from "cors"
+import express, { NextFunction, Request, Response } from "express";
+import createHttpError, {isHttpError} from "http-errors";
+import mongoose from "mongoose";
+import matchesRoutes from "./routes/matches";
 
 dotenv.config();
 
@@ -13,6 +14,21 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 app.use("/api", matchesRoutes);
+
+app.use((_req, _res, next) => {
+  next(createHttpError(404, "Endpoint not found"))
+})
+
+app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(error);
+  let errorMessage = "An unknown error occurred";
+  let statusCode = 500;
+  if (isHttpError(error)) {
+    statusCode = error.status;
+    errorMessage = error.message;
+  }
+  res.status(statusCode).json({ error: errorMessage });
+});
 
 const startServer = async () => {
   if (!process.env.MONGO_DB_URL) {
