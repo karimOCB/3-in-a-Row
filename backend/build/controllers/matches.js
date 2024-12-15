@@ -17,6 +17,26 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const matchModel_1 = __importDefault(require("../models/matchModel"));
 const http_errors_1 = __importDefault(require("http-errors"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const generateTokens = (matchId) => {
+    const accessToken = jsonwebtoken_1.default.sign({ matchId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+    const refreshToken = jsonwebtoken_1.default.sign({ matchId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+    return { accessToken, refreshToken };
+};
+const setCookies = (res, accessToken, refreshToken) => {
+    res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000
+    });
+    res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+};
 const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username1, username2, email1, email2, password } = req.body;
     try {
@@ -34,7 +54,10 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             throw (0, http_errors_1.default)("400", "Match already exist. Login or Create another Match");
         }
         match = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed });
-        res.status(200).json({ data: {
+        const { accessToken, refreshToken } = generateTokens(match._id);
+        setCookies(res, accessToken, refreshToken);
+        res.status(200).json({
+            data: {
                 username1: match.username1,
                 username2: match.username2,
                 email1: match.email1,
@@ -74,7 +97,8 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         if (!passwordMatch) {
             throw (0, http_errors_1.default)(401, "Invalid password");
         }
-        res.status(200).json({ data: {
+        res.status(200).json({
+            data: {
                 username1: matchExist.username1,
                 username2: matchExist.username2,
                 email1: matchExist.email1,

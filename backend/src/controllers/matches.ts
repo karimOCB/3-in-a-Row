@@ -1,9 +1,31 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Response } from "express";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt"
 import { GameStats, IMatch } from '../../types';
 import MatchModel from "../models/matchModel";
 import createHttpError from "http-errors";
+import jwt from "jsonwebtoken"
+
+const generateTokens = (matchId: mongoose.Types.ObjectId) => {
+  const accessToken = jwt.sign({ matchId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" })
+  const refreshToken = jwt.sign({ matchId }, process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: "7d"})
+  return { accessToken, refreshToken}
+}
+
+const setCookies = (res: Response, accessToken: string, refreshToken: string) => {
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== "development",
+    sameSite: 'strict', 
+    maxAge: 15 * 60 * 1000
+  })
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== "development",
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000 
+  })
+}
 
 export const signup: RequestHandler<unknown, unknown, IMatch, unknown> = async (req, res, next): Promise<any> => {
   const { username1, username2, email1, email2, password } = req.body;
@@ -26,8 +48,13 @@ export const signup: RequestHandler<unknown, unknown, IMatch, unknown> = async (
     }
 
     match = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed });
+  
+    const { accessToken, refreshToken } = generateTokens(match._id)
+    
+    setCookies(res, accessToken, refreshToken)
 
-    res.status(200).json({ data: {
+    res.status(200).json({
+      data: {
         username1: match.username1,
         username2: match.username2,
         email1: match.email1,
@@ -40,17 +67,17 @@ export const signup: RequestHandler<unknown, unknown, IMatch, unknown> = async (
       }
     })
   } catch (error) {
-    if(error instanceof Error)
-    console.error(error.message);
-  
+    if (error instanceof Error)
+      console.error(error.message);
+
     next(error)
   }
-  
+
 }
 
 export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = async (req, res, next): Promise<any> => {
   const { username1, username2, email1, email2, password } = req.body;
-  
+
   if (!password) {
     throw createHttpError(400, "All fields are required")
   }
@@ -73,7 +100,8 @@ export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = asyn
       throw createHttpError(401, "Invalid password")
     }
 
-    res.status(200).json({ data: {
+    res.status(200).json({
+      data: {
         username1: matchExist.username1,
         username2: matchExist.username2,
         email1: matchExist.email1,
@@ -84,7 +112,7 @@ export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = asyn
         draws: matchExist.draws,
         _id: matchExist._id
       }
-      })
+    })
 
   } catch (error) {
     next(error)
@@ -96,7 +124,7 @@ export const getPairMatches: RequestHandler = async (req, res) => {
 
   try {
     const matches = await MatchModel.findById(matchId).exec();
-    if(!matches) {
+    if (!matches) {
       throw createHttpError(400, "No match found")
     }
 
