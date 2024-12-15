@@ -24,7 +24,16 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
             throw (0, http_errors_1.default)(400, "Password must be at least 5 characters long");
         }
         const passwordHashed = yield bcrypt_1.default.hash(password, 10);
-        const match = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed });
+        let match = yield matchModel_1.default.findOne({
+            $or: [
+                { username1, username2, email1, email2 },
+                { username1: username2, username2: username1, email1: email2, email2: email1 }
+            ]
+        });
+        if (match) {
+            throw (0, http_errors_1.default)("400", "Match already exist. Login or Create another Match");
+        }
+        match = yield matchModel_1.default.create({ username1, username2, email1, email2, password: passwordHashed });
         res.status(200).json({ data: {
                 username1: match.username1,
                 username2: match.username2,
@@ -33,6 +42,7 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
                 won1: match.won1,
                 won2: match.won2,
                 played: match.played,
+                draws: match.draws,
                 _id: match._id
             }
         });
@@ -72,6 +82,7 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
                 won1: matchExist.won1,
                 won2: matchExist.won2,
                 played: matchExist.played,
+                draws: matchExist.draws,
                 _id: matchExist._id
             }
         });
@@ -85,10 +96,14 @@ const getPairMatches = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const matchId = req.params.matchId;
     try {
         const matches = yield matchModel_1.default.findById(matchId).exec();
+        if (!matches) {
+            throw (0, http_errors_1.default)(400, "No match found");
+        }
         res.status(200).json({
-            played: matches === null || matches === void 0 ? void 0 : matches.played,
-            won1: matches === null || matches === void 0 ? void 0 : matches.won1,
-            won2: matches === null || matches === void 0 ? void 0 : matches.won2,
+            played: matches.played,
+            won1: matches.won1,
+            won2: matches.won2,
+            draws: matches.draws
         });
     }
     catch (error) {
@@ -98,8 +113,8 @@ const getPairMatches = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getPairMatches = getPairMatches;
 const updateGameStats = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const matchId = req.params.matchId;
-    const { played: newPlayed, won1: newWon1, won2: newWon2 } = req.body;
-    console.log(newPlayed, newWon1, newWon2, matchId, typeof matchId, mongoose_1.default.isValidObjectId(matchId));
+    const { played: newPlayed, won1: newWon1, won2: newWon2, draws: newDraws } = req.body;
+    console.log(newPlayed, newWon1, newWon2, newDraws, matchId, typeof matchId, mongoose_1.default.isValidObjectId(matchId));
     try {
         if (!mongoose_1.default.isValidObjectId(matchId)) {
             throw (0, http_errors_1.default)(404, "Invalid Match id");
@@ -110,6 +125,7 @@ const updateGameStats = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         match.played = newPlayed;
         match.won1 = newWon1;
         match.won2 = newWon2;
+        match.draws = newDraws;
         const updatedMatch = yield match.save();
         res.status(200).json(updatedMatch);
     }

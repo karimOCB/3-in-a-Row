@@ -10,5 +10,6 @@ const matchSchema = new mongoose_1.Schema({
     played: { type: Number, default: 0 },
     won1: { type: Number, default: 0 },
     won2: { type: Number, default: 0 },
+    draws: { type: Number, default: 0 },
 });
 exports.default = (0, mongoose_1.model)("Match", matchSchema);

@@ -35,6 +35,7 @@ const WinnerModal = ({ winner, username1, username2, gameStats, setWinner, setSq
       setGameStats({
         ...gameStats,
         played: gameStats.played + 1,
+        draws: gameStats.draws + 1
       })
     }
     setWinner(null)

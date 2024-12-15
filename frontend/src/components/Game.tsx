@@ -28,14 +28,14 @@ const Game = ({ gameProps }: GameProps) => {
     return (
       windowWidth > 500 ? 
         <div className="flex items-center justify-center">
-          <div className="flex flex-col mr-10">
+          <div className="flex flex-col mr-10 border px-2 py-1 rounded-xl bg-blue-900">
             <h2>User 1: {username1}</h2>
             <span>Won: {gameStats?.won1 }</span>
           </div>
           <div className="grid grid-cols-3 min-w-[168px] h-[168px] sm:w-72 sm:h-72">
             {squares.map((_, index) => <PageSquare key={index} index={index} {...gameProps}/>)}
           </div>
-          <div className="flex flex-col ml-10">
+          <div className="flex flex-col ml-10 border px-2 py-1 rounded-xl bg-blue-900">
             <h2>User 2: {username2}</h2>
             <span>Won: {gameStats?.won2}</span>
           </div>

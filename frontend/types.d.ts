@@ -8,12 +8,14 @@ export interface IMatch {
   played?: number;
   won1?: number;
   won2?: number;
+  draws?: number;
 }
 
 export interface GameStats {
   played: number,
   won1: number,
-  won2: number
+  won2: number,
+  draws: number;
 }
 
 type Cell = "O" | "X" | "";

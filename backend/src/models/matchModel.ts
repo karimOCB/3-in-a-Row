@@ -10,6 +10,7 @@ const matchSchema = new Schema<IMatch>({
   played: { type: Number, default: 0 },
   won1: { type: Number, default: 0 },
   won2: { type: Number, default: 0 },
+  draws: { type: Number, default: 0 },
 });
 
 export default model<IMatch>("Match", matchSchema);

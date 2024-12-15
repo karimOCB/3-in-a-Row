@@ -9,6 +9,7 @@ export interface IMatch {
   played?: number;
   won1?: number;
   won2?: number;
+  draws?: number;
   _id: Types.ObjectId;
 }
 
@@ -17,4 +18,5 @@ export interface GameStats {
   played: number,
   won1: number,
   won2: number,
+  draws: number,
 }

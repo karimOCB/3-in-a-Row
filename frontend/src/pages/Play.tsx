@@ -59,7 +59,7 @@ const Play = () => {
             <h1 className="mb-8 sm:text-[5rem] font-extrabold text-center text-slate-100 underline decoration-dashed decoration-[6px] underline-offset-8 decoration-fuchsia-600">Play 3 in a Row</h1>
             <p className="sm:text-[16px] text-[14px] text-center max-w-[420px] ">Can you outsmart your opponent? Who will rise, dominate the board, and claim the title of Conqueror of the World?</p>
           </header>
-          <h2 className="text-xl sm:text-2xl mb-3 border px-2 py-1 rounded-xl bg-blue-900">Matches: {gameStats?.played}</h2>
+          <h2 className="text-xl sm:text-2xl mb-3 border px-2 pb-2 pt-1 rounded-xl bg-blue-900">Matches: {gameStats?.played} | Draws: {gameStats?.draws}</h2>
           <Game gameProps={gameProps}/>
         </div>
         {winner && <WinnerModal winner={winner} username1={username1} username2={username2} setWinner={setWinner} setSquares={setSquares} setGameStats={setGameStats} gameStats={gameStats} setTurn={setTurn}/>} 

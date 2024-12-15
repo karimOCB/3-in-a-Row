@@ -15,7 +15,17 @@ export const signup: RequestHandler<unknown, unknown, IMatch, unknown> = async (
 
     const passwordHashed = await bcrypt.hash(password, 10)
 
-    const match = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed });
+    let match = await MatchModel.findOne({
+      $or: [
+        { username1, username2, email1, email2 },
+        { username1: username2, username2: username1, email1: email2, email2: email1 }
+      ]
+    });
+    if (match) {
+      throw createHttpError("400", "Match already exist. Login or Create another Match")
+    }
+
+    match = await MatchModel.create({ username1, username2, email1, email2, password: passwordHashed });
 
     res.status(200).json({ data: {
         username1: match.username1,
@@ -25,6 +35,7 @@ export const signup: RequestHandler<unknown, unknown, IMatch, unknown> = async (
         won1: match.won1,
         won2: match.won2,
         played: match.played,
+        draws: match.draws,
         _id: match._id
       }
     })
@@ -70,6 +81,7 @@ export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = asyn
         won1: matchExist.won1,
         won2: matchExist.won2,
         played: matchExist.played,
+        draws: matchExist.draws,
         _id: matchExist._id
       }
       })
@@ -84,10 +96,15 @@ export const getPairMatches: RequestHandler = async (req, res) => {
 
   try {
     const matches = await MatchModel.findById(matchId).exec();
+    if(!matches) {
+      throw createHttpError(400, "No match found")
+    }
+
     res.status(200).json({
-      played: matches?.played,
-      won1: matches?.won1,
-      won2: matches?.won2,
+      played: matches.played,
+      won1: matches.won1,
+      won2: matches.won2,
+      draws: matches.draws
     });
   } catch (error) {
     console.error(error)
@@ -101,8 +118,8 @@ interface updateGameStatsParams {
 
 export const updateGameStats: RequestHandler<updateGameStatsParams, unknown, GameStats, unknown> = async (req, res, next) => {
   const matchId = req.params.matchId;
-  const { played: newPlayed, won1: newWon1, won2: newWon2 } = req.body;
-  console.log(newPlayed, newWon1, newWon2, matchId, typeof matchId, mongoose.isValidObjectId(matchId))
+  const { played: newPlayed, won1: newWon1, won2: newWon2, draws: newDraws } = req.body;
+  console.log(newPlayed, newWon1, newWon2, newDraws, matchId, typeof matchId, mongoose.isValidObjectId(matchId))
 
   try {
     if (!mongoose.isValidObjectId(matchId)) {
@@ -115,6 +132,7 @@ export const updateGameStats: RequestHandler<updateGameStatsParams, unknown, Gam
     match.played = newPlayed;
     match.won1 = newWon1;
     match.won2 = newWon2;
+    match.draws = newDraws;
 
     const updatedMatch = await match.save()
     res.status(200).json(updatedMatch);

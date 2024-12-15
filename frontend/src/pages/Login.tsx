@@ -36,10 +36,12 @@ const onSubmitLogin = async () => {
     if (response.data) {
       navigate("/guide", { state: response.data });
     }
-    console.log(response)
   } catch (error: unknown) { // Use `unknown` here
-    console.error(error);
-
+    if (error instanceof Error) {
+      const errorMessage = error.message.split("message")
+      console.log(errorMessage[1])
+      setErrorMessage(errorMessage[1])
+    }
   }
 };
 
@@ -50,14 +52,12 @@ const onSubmitLogin = async () => {
       if (response.data) {
         navigate("/guide", { state: response.data });
       }
-      console.log(response)
     } catch (error) {
       if (error instanceof Error) {
-          console.log(`${error.message}`)
-          console.log(error)
+          const errorMessage = error.message.split("message")
+          console.log(errorMessage[1])
+          setErrorMessage(errorMessage[1])
       }
-      console.error("FRONTEND", error)
-      
     }
   }
  
@@ -155,8 +155,8 @@ const onSubmitLogin = async () => {
           </form>
         </div>
         {errorMessage && 
-          <div className="absolute w-[50%] h-[30%] border-2 rounded-xl bg-slate-300 flex items-center border-red-400 cursor-pointer" onClick={() => setErrorMessage(null)}>
-            <p className="text-xl sm:text-3xl text-center text-fuchsia-900 font-semibold">
+          <div className="absolute w-[50%] h-[30%] border-2 rounded-xl bg-slate-300 flex justify-center items-center border-red-400 cursor-pointer" onClick={() => setErrorMessage(null)}>
+            <p className="text-xl sm:text-3xl text-center text-fuchsia-900 font-semibold px-10">
              {errorMessage}
             </p>
           </div>
