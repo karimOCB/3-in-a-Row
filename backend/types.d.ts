@@ -1,4 +1,5 @@
 import { Types } from "mongoose"
+import matchModel from "./src/models/matchModel";
 
 export interface IMatch {
   username1: string;
@@ -19,4 +20,16 @@ export interface GameStats {
   won1: number,
   won2: number,
   draws: number,
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      match?: IMatch;
+    }
+  }
+}
+
+interface updateGameStatsParams {
+  matchId: string
 }

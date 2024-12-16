@@ -28,10 +28,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const AppController = __importStar(require("../controllers/matches"));
+const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.post("/login", AppController.login);
 router.post("/signup", AppController.signup);
-router.get("/matches", AppController.getAllMatches);
-router.get("/pairMatches/:matchId", AppController.getPairMatches);
-router.patch("/gameStats/:matchId", AppController.updateGameStats);
+router.get("/matches", authMiddleware_1.protectRoute, AppController.getAllMatches);
+router.get("/pairMatches/:matchId", authMiddleware_1.protectRoute, AppController.getPairMatches);
+router.patch("/gameStats/:matchId", authMiddleware_1.protectRoute, AppController.updateGameStats);
 exports.default = router;

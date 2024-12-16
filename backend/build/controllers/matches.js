@@ -71,18 +71,16 @@ const signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
-        if (error instanceof Error)
-            console.error(error.message);
         next(error);
     }
 });
 exports.signup = signup;
 const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username1, username2, email1, email2, password } = req.body;
-    if (!password) {
-        throw (0, http_errors_1.default)(400, "All fields are required");
-    }
     try {
+        if (!password) {
+            throw (0, http_errors_1.default)(400, "All fields are required");
+        }
         let matchExist = yield matchModel_1.default.findOne({
             $or: [
                 { username1, username2, email1, email2 },
@@ -97,6 +95,8 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         if (!passwordMatch) {
             throw (0, http_errors_1.default)(401, "Invalid password");
         }
+        const { accessToken, refreshToken } = generateTokens(matchExist._id);
+        setCookies(res, accessToken, refreshToken);
         res.status(200).json({
             data: {
                 username1: matchExist.username1,
@@ -138,7 +138,6 @@ exports.getPairMatches = getPairMatches;
 const updateGameStats = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const matchId = req.params.matchId;
     const { played: newPlayed, won1: newWon1, won2: newWon2, draws: newDraws } = req.body;
-    console.log(newPlayed, newWon1, newWon2, newDraws, matchId, typeof matchId, mongoose_1.default.isValidObjectId(matchId));
     try {
         if (!mongoose_1.default.isValidObjectId(matchId)) {
             throw (0, http_errors_1.default)(404, "Invalid Match id");

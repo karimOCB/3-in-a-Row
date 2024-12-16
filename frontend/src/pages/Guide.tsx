@@ -1,7 +1,16 @@
-import { Link, useLocation } from "react-router-dom"
+import { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 const Guide = () => {
+  const navigate = useNavigate()
   const location = useLocation()
+  const { _id }: { _id: string | null } = location.state || {}
+
+  useEffect(() => {
+    if (!_id) {
+      navigate('/');
+    }
+  }, [_id, navigate]);
 
   const StrategyItem = ({ title, children }: {title: string, children: string }) => (
     <li className="mb-4">
