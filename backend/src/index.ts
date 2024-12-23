@@ -4,12 +4,17 @@ import express, { NextFunction, Request, Response } from "express";
 import createHttpError, {isHttpError} from "http-errors";
 import mongoose from "mongoose";
 import matchesRoutes from "./routes/matches";
+import cookieParser from "cookie-parser"
 
 dotenv.config();
 
 const app = express();
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173", // Frontend origin
+  credentials: true, // Allow credentials (cookies)
+}))
 app.use(express.json());
+app.use(cookieParser()) // allow you to access your cookies from the request
 
 const PORT = process.env.PORT || 3000;
 

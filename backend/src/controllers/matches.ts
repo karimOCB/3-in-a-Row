@@ -16,13 +16,13 @@ const setCookies = (res: Response, accessToken: string, refreshToken: string) =>
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: 15 * 60 * 1000
   })
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: 'strict',
+    sameSite: 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000
   })
 }
@@ -99,6 +99,7 @@ export const login: RequestHandler<unknown, IMatch | {}, IMatch, unknown> = asyn
 
     const { accessToken, refreshToken } = generateTokens(matchExist._id)
     setCookies(res, accessToken, refreshToken)
+    console.log(accessToken, refreshToken)
 
     res.status(200).json({
       data: {

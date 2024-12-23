@@ -5,9 +5,9 @@ import { RequestHandler } from "express"
 import { updateGameStatsParams } from "../../types"
 
 export const protectRoute: RequestHandler<updateGameStatsParams | unknown> = async (req, _res, next) => {
+    const accessToken = req.cookies.accessToken
+    console.log("ProtectRoute", accessToken)
     try {
-        const accessToken = req.cookies.accessToken
-
         if(!accessToken) {
             throw createHttpError(401, "Unathorized - No access token")
         }
@@ -20,8 +20,6 @@ export const protectRoute: RequestHandler<updateGameStatsParams | unknown> = asy
                 throw createHttpError(401, "Match not found")
             }
             
-            
-
             req.match = match
             next()
         } catch (error) {
@@ -32,6 +30,6 @@ export const protectRoute: RequestHandler<updateGameStatsParams | unknown> = asy
         }
 
     } catch (error) {
-      throw createHttpError(401, "Unathorized - Invalid accest token")  
+      throw createHttpError(401, "Unauthorized - Invalid accest token")  
     }
 }

@@ -41,10 +41,15 @@ const express_1 = __importDefault(require("express"));
 const http_errors_1 = __importStar(require("http-errors"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const matches_1 = __importDefault(require("./routes/matches"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: "http://localhost:5173", // Frontend origin
+    credentials: true, // Allow credentials (cookies)
+}));
 app.use(express_1.default.json());
+app.use((0, cookie_parser_1.default)()); // allow you to access your cookies from the request
 const PORT = process.env.PORT || 3000;
 app.use("/api", matches_1.default);
 app.use((_req, _res, next) => {
