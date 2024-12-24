@@ -9,7 +9,7 @@ export const protectRoute: RequestHandler<updateGameStatsParams | unknown> = asy
     console.log("ProtectRoute", accessToken)
     try {
         if(!accessToken) {
-            throw createHttpError(401, "Unathorized - No access token")
+            throw createHttpError(401, "Unauthorized - No access token")
         }
 
         try {
@@ -30,6 +30,6 @@ export const protectRoute: RequestHandler<updateGameStatsParams | unknown> = asy
         }
 
     } catch (error) {
-      throw createHttpError(401, "Unauthorized - Invalid accest token")  
+      throw createHttpError(401, "Unauthorized - Invalid access token")  
     }
 }
