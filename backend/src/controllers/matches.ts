@@ -16,13 +16,13 @@ const setCookies = (res: Response, accessToken: string, refreshToken: string) =>
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: 'none',
+    sameSite: 'strict',
     maxAge: 15 * 60 * 1000
   })
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: 'none',
+    sameSite: 'strict',
     maxAge: 7 * 24 * 60 * 60 * 1000
   })
 }
@@ -168,6 +168,30 @@ export const getAllMatches: RequestHandler = async (_req, res, next) => {
   try {
     const matches = await MatchModel.find().exec();
     res.status(200).json(matches);
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const refreshToken: RequestHandler = async (req, res, next) => {
+  try {
+    const refreshToken = req.cookies.refreshToken
+    if(!refreshToken) {
+      throw createHttpError(401, "No refresh token found")
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as { matchId: string };
+    
+    const accessToken = jwt.sign({ matchId: decoded.matchId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m"})
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000
+    })
+
+    res.status(200).json({ message: "Tokens refreshed successfully" });
   } catch (error) {
     next(error)
   }

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Board, Cell, GameStats, Winner, winningLine } from "../../types";
 import * as MatchesApi from "../network/matches_api.ts";
 import { determineWinner } from "../utils";
 
-import WinnerModal from "../components/WinnerModal";
 import Game from "../components/Game.tsx";
+import WinnerModal from "../components/WinnerModal";
 
 
 const Play = () => {
@@ -15,10 +15,15 @@ const Play = () => {
   const [gameStats, setGameStats] = useState<GameStats>();
   const [winningLine, setWinningLine] = useState<winningLine | null>(null)
 
+  const navigate = useNavigate()
   const location = useLocation();
   const { username1, username2, _id }: { username1: string, username2: string, _id: string} = location.state || {};
 
   useEffect(() => { 
+    if (!_id) {
+      navigate('/');
+    }
+
     if(!gameStats) {
       const fetchGameStats = async () => {
         if(_id) {

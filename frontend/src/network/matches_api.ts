@@ -19,7 +19,8 @@ export const signup = async (credentials: IMatch) => {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
+        credentials: "include"
     })
     return response.json()
 }
@@ -30,7 +31,8 @@ export const login = async (credentials: IMatch) => {
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
+        credentials: "include"
     })
     return response.json();
 }
@@ -41,14 +43,16 @@ export const updateGameStats = async (matchId: string, gameStats: GameStats): Pr
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(gameStats)
+        body: JSON.stringify(gameStats),
+        credentials: "include"
     });
     return response.json()
 }
 
 export const getPairMatches = async (matchId: string): Promise<GameStats> => {
     const response = await fetchData(`${backendUrl}/api/pairMatches/${matchId}`, {
-        method: "GET"
+        method: "GET",
+        credentials: "include"
     })
     return response.json();
 }

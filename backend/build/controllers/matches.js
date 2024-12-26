@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllMatches = exports.updateGameStats = exports.getPairMatches = exports.login = exports.signup = void 0;
+exports.refreshToken = exports.getAllMatches = exports.updateGameStats = exports.getPairMatches = exports.login = exports.signup = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const matchModel_1 = __importDefault(require("../models/matchModel"));
@@ -27,13 +27,13 @@ const setCookies = (res, accessToken, refreshToken) => {
     res.cookie('accessToken', accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
-        sameSite: 'none',
+        sameSite: 'strict',
         maxAge: 15 * 60 * 1000
     });
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
-        sameSite: 'none',
+        sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
 };
@@ -168,3 +168,12 @@ const getAllMatches = (_req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.getAllMatches = getAllMatches;
+const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const refreshToken = req.
+        ;
+    }
+    catch (error) {
+    }
+});
+exports.refreshToken = refreshToken;
