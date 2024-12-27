@@ -176,13 +176,13 @@ export const getAllMatches: RequestHandler = async (_req, res, next) => {
 export const refreshToken: RequestHandler = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken
-    if(!refreshToken) {
+    if (!refreshToken) {
       throw createHttpError(401, "No refresh token found")
     }
 
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as { matchId: string };
-    
-    const accessToken = jwt.sign({ matchId: decoded.matchId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m"})
+
+    const accessToken = jwt.sign({ matchId: decoded.matchId }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: "15m" })
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,

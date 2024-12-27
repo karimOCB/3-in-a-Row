@@ -35,4 +35,5 @@ router.post("/signup", AppController.signup);
 router.get("/matches", authMiddleware_1.protectRoute, AppController.getAllMatches);
 router.get("/pairMatches/:matchId", authMiddleware_1.protectRoute, AppController.getPairMatches);
 router.patch("/gameStats/:matchId", authMiddleware_1.protectRoute, AppController.updateGameStats);
+router.get("/refresh", AppController.refreshToken);
 exports.default = router;

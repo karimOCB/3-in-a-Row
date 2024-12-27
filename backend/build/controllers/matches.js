@@ -170,10 +170,22 @@ const getAllMatches = (_req, res, next) => __awaiter(void 0, void 0, void 0, fun
 exports.getAllMatches = getAllMatches;
 const refreshToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const refreshToken = req.
-        ;
+        const refreshToken = req.cookies.refreshToken;
+        if (!refreshToken) {
+            throw (0, http_errors_1.default)(401, "No refresh token found");
+        }
+        const decoded = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const accessToken = jsonwebtoken_1.default.sign({ matchId: decoded.matchId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000
+        });
+        res.status(200).json({ message: "Tokens refreshed successfully" });
     }
     catch (error) {
+        next(error);
     }
 });
 exports.refreshToken = refreshToken;

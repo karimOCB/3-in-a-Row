@@ -9,5 +9,6 @@ router.post("/signup", AppController.signup)
 router.get("/matches", protectRoute, AppController.getAllMatches)
 router.get("/pairMatches/:matchId", protectRoute, AppController.getPairMatches)
 router.patch("/gameStats/:matchId", protectRoute, AppController.updateGameStats)
+router.get("/refresh", AppController.refreshToken)
 
 export default router;

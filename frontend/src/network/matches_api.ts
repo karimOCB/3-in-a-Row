@@ -3,14 +3,21 @@ import { GameStats } from "../../types";
 const backendUrl = "http://localhost:3000"
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
-    const response = await fetch(input, init);
+    let response = await fetch(input, init);
     if (response.ok) {
         return response;
-    } else {
-        const errorBody = await response.json();
-        const errorMessage = errorBody.error;
-        throw new Error(`Request failed: ${response.status} message ${errorMessage}`)
+    } else if (response.status === 401) {
+        const refreshResponse = await refreshAccessToken();
+        if (refreshResponse.ok) {
+            response = await fetch(input, init)
+            if (response.ok) {
+                return response;
+            }
+        }
     }
+    const errorBody = await response.json();
+    const errorMessage = errorBody.error;
+    throw new Error(`Request failed: ${response.status} message ${errorMessage}`)
 }
 
 export const signup = async (credentials: IMatch) => {
@@ -55,4 +62,12 @@ export const getPairMatches = async (matchId: string): Promise<GameStats> => {
         credentials: "include"
     })
     return response.json();
+}
+
+const refreshAccessToken = async () => {
+    const response = await fetchData(`${backendUrl}/api/refresh`, {
+        method: "GET",
+        credentials: "include"
+    })
+    return response;
 }
