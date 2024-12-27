@@ -45,7 +45,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173", // Frontend origin
+    origin: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "", // Frontend origin
     credentials: true, // Allow credentials (cookies)
 }));
 app.use(express_1.default.json());
