@@ -1,4 +1,4 @@
-import { Board, Cell, winningLine } from "../../types";
+import { Board, Cell, winningLine } from "../types";
 
 interface PageSquareProps {
   index: number, 

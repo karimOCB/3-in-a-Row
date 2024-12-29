@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import Confetti from "react-confetti";
-import { Board, Cell, GameStats, Winner } from "../../types";
+import { Board, Cell, GameStats, Winner } from "../types";
 import { windowResize } from "../utils";
 
 interface WinnerModalInt {
   winner: Winner,
   username1: string,
   username2: string,
-  gameStats: GameStats,
+  gameStats: GameStats | undefined,
   setWinner: React.Dispatch<React.SetStateAction<Winner>>
   setSquares: React.Dispatch<React.SetStateAction<Board>>
-  setGameStats: React.Dispatch<React.SetStateAction<GameStats>>
+  setGameStats?: React.Dispatch<React.SetStateAction<GameStats | undefined>>
   setTurn: React.Dispatch<React.SetStateAction<Cell>>
 }
 
@@ -19,24 +19,26 @@ const WinnerModal = ({ winner, username1, username2, gameStats, setWinner, setSq
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   
   const onCloseModal = () => {
-    if(winner === "O"){
-      setGameStats({
-        ...gameStats,
-        played: gameStats.played + 1,
-        won1: gameStats.won1 + 1,
-      })
-    } else if (winner === "X") {
-      setGameStats({
-        ...gameStats,
-        played: gameStats.played + 1,
-        won2: gameStats.won2 + 1,
-      })
-    } else {
-      setGameStats({
-        ...gameStats,
-        played: gameStats.played + 1,
-        draws: gameStats.draws + 1
-      })
+    if(gameStats && setGameStats) {
+      if(winner === "O"){
+        setGameStats({
+          ...gameStats,
+          played: gameStats.played + 1,
+          won1: gameStats.won1 + 1,
+        })
+      } else if (winner === "X") {
+        setGameStats({
+          ...gameStats,
+          played: gameStats.played + 1,
+          won2: gameStats.won2 + 1,
+        })
+      } else {
+        setGameStats({
+          ...gameStats,
+          played: gameStats.played + 1,
+          draws: gameStats.draws + 1
+        })
+      }
     }
     setWinner(null)
     setSquares(Array(9).fill("") as Board)

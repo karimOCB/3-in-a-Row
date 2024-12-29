@@ -1,5 +1,5 @@
-import { IMatch } from "../../types"
-import { GameStats } from "../../types";
+import { IMatch } from "../types"
+import { GameStats } from "../types";
 import dotenv from "dotenv"
 dotenv.config()
 

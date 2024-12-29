@@ -1,4 +1,4 @@
-import { Board, Winner, winningLine } from "../types";
+import { Board, Winner, winningLine } from "./types";
 
 export const winningLines: winningLine[] = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Top row, Middle row, Bottom row
@@ -20,10 +20,10 @@ type WindowResize = {
     setWindowWidth: React.Dispatch<React.SetStateAction<number>>,
 }
 
-export const windowResize = ({setWindowHeight, setWindowWidth}: WindowResize) => {
+export const windowResize = ({ setWindowHeight, setWindowWidth }: WindowResize) => {
     const resize = () => {
         setWindowWidth(window.innerWidth)
-        if(setWindowHeight) {
+        if (setWindowHeight) {
             setWindowHeight(window.innerHeight)
         }
     }

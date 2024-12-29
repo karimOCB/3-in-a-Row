@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PageSquare from "./PageSquare";
-import { Board, Cell, GameStats, winningLine } from "../../types";
+import { Board, Cell, GameStats, winningLine } from "../types";
 import { windowResize } from "../utils";
 
 interface GameProps {

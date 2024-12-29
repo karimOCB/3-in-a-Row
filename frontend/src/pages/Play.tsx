@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Board, Cell, GameStats, Winner, winningLine } from "../../types";
+import { Board, Cell, GameStats, Winner, winningLine } from "../types";
 import * as MatchesApi from "../network/matches_api.ts";
 import { determineWinner } from "../utils";
 
@@ -12,7 +12,7 @@ const Play = () => {
   const [turn, setTurn] = useState<Cell>("O");
   const [squares, setSquares] = useState(Array(9).fill("") as Board)
   const [winner, setWinner] = useState<Winner>(null);
-  const [gameStats, setGameStats] = useState<GameStats>();
+  const [gameStats, setGameStats] = useState<GameStats | undefined>(undefined);
   const [winningLine, setWinningLine] = useState<winningLine | null>(null)
 
   const navigate = useNavigate()
@@ -54,7 +54,9 @@ const Play = () => {
 
   }, [squares])
 
-  const gameProps={ squares, turn, winningLine, gameStats, setSquares, setTurn, username1, username2 }
+  const gameProps={ squares, turn, winningLine, gameStats, setSquares, setTurn, username1, username2}
+
+//  const winnerProps = { winner, username1, username2, setWinner, setSquares, setTurn, gameStats, setGameStats }
 
   return (
     

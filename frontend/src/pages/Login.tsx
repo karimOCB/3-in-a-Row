@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IMatch } from "../../types.ts";
+import { IMatch } from "../types";
 import * as MatchesApi from "../network/matches_api.ts";
 import { useNavigate } from "react-router-dom";
 
