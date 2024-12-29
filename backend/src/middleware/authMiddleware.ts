@@ -2,13 +2,13 @@ import createHttpError from "http-errors"
 import jwt from "jsonwebtoken"
 import matchModel from "../models/matchModel"
 import { RequestHandler } from "express"
-import { updateGameStatsParams } from "../../types"
+import { updateGameStatsParams } from "../types"
 
 export const protectRoute: RequestHandler<updateGameStatsParams | unknown> = async (req, _res, next) => {
     const accessToken = req.cookies.accessToken
 
     try {
-        if(!accessToken) {
+        if (!accessToken) {
             throw createHttpError(401, "Unauthorized - No access token")
         }
 
@@ -20,17 +20,17 @@ export const protectRoute: RequestHandler<updateGameStatsParams | unknown> = asy
             if (!match) {
                 throw createHttpError(401, "Match not found")
             }
-            
+
             req.match = match
             next()
         } catch (error) {
-            if(error instanceof Error && error.name === "TokenExpiredError") {
+            if (error instanceof Error && error.name === "TokenExpiredError") {
                 throw createHttpError(401, "Unauthorized - Access token expired")
             }
             throw error
         }
 
     } catch (error) {
-        throw createHttpError(401, "Unauthorized - Invalid access token")  
+        throw createHttpError(401, "Unauthorized - Invalid access token")
     }
 }

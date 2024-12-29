@@ -1,7 +1,7 @@
 import { RequestHandler, Response } from "express";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt"
-import { GameStats, IMatch, updateGameStatsParams } from '../../types';
+import { GameStats, IMatch, updateGameStatsParams } from '../types';
 import MatchModel from "../models/matchModel";
 import createHttpError from "http-errors";
 import jwt from "jsonwebtoken"

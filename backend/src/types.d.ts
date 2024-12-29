@@ -1,5 +1,5 @@
 import { Types } from "mongoose"
-import matchModel from "./src/models/matchModel";
+import matchModel from "./models/matchModel";
 
 export interface IMatch {
   username1: string;
@@ -15,7 +15,7 @@ export interface IMatch {
 }
 
 
-export interface GameStats { 
+export interface GameStats {
   played: number,
   won1: number,
   won2: number,
