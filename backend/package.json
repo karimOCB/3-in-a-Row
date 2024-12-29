@@ -17,6 +17,7 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
+  "types": "src/types.d.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node --experimental-strip-types --watch build/index.js",
