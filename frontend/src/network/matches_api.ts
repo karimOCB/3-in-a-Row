@@ -3,7 +3,7 @@ import { GameStats } from "../../types";
 import dotenv from "dotenv"
 dotenv.config()
 
-const backendUrl = process.env.REACT_APP_API_URL
+const backendUrl = process.env.REACT_APP_API_URL || "http://localhost:3000"
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
     let response = await fetch(input, init);
