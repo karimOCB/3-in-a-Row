@@ -1,7 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
-import createHttpError, {isHttpError} from "http-errors";
+import createHttpError, { isHttpError } from "http-errors";
 import mongoose from "mongoose";
 import matchesRoutes from "./routes/matches";
 import cookieParser from "cookie-parser"
