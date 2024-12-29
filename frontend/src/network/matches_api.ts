@@ -1,9 +1,7 @@
 import { IMatch } from "../types"
 import { GameStats } from "../types";
-import dotenv from "dotenv"
-dotenv.config()
 
-const backendUrl = process.env.REACT_APP_API_URL || "http://localhost:3000"
+const backendUrl = "https://three-in-a-row-backend.onrender.com"
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
     let response = await fetch(input, init);
