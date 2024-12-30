@@ -12,6 +12,8 @@ const app = express();
 app.use(cors({
   origin: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://three-in-a-row-frontend.onrender.com/", // Frontend origin
   credentials: true, // Allow credentials (cookies)
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type, Authorization',
 }))
 app.use(express.json());
 app.use(cookieParser()) // allow you to access your cookies from the request
