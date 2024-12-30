@@ -55,7 +55,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://three-in-a-row-frontend.onrender.com/", // Frontend origin
+    origin: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://three-in-a-row-frontend.onrender.com", // Frontend origin
     credentials: true, // Allow credentials (cookies)
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type, Authorization',
