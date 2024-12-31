@@ -6,6 +6,7 @@ const Guide = () => {
   const location = useLocation()
   const { _id }: { _id: string | null } = location.state || {}
 
+  
   useEffect(() => {
     if (!_id) {
       navigate('/');
