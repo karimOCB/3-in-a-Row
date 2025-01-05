@@ -3,7 +3,7 @@
 Welcome to **Tic-Tac-Toe: Three in a Row**, a simple yet engaging web-based version of the classic game! Challenge your friends or play against an AI to see who gets three in a row first. 🎉
 
 ## 🌐 Live Demo
-[Check out the game here!](https://three-in-a-row-backend.onrender.com)
+[Check out the game here!](https://three-in-a-row-frontend.onrender.com/)
 
 ## 📌 Features
 - **Classic Gameplay**: Enjoy the timeless fun of Tic-Tac-Toe.
